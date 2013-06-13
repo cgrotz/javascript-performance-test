@@ -10,8 +10,6 @@ import org.mozilla.javascript.commonjs.module.RequireBuilder;
 
 import com.google.common.collect.Maps;
 
-import de.skiptag.js.performance.Console;
-
 public class RhinoRunner {
 	private ResourceLoader resourceLoader;
 
@@ -24,21 +22,6 @@ public class RhinoRunner {
 	public RhinoRunner(String scriptName) {
 		this.resourceLoader = new ResourceLoader();
 		this.scriptName = scriptName;
-	}
-
-	public RhinoRunner withAttribute(String key, Object value) {
-		attributes.put(key, value);
-		return this;
-	}
-
-	private void addStandardObjectsToScope(ScriptableObject scope) {
-		Object console = Context.javaToJS(new Console(), scope);
-		ScriptableObject.putProperty(scope, "console", console);
-
-		for (String key : attributes.keySet()) {
-			Object value = Context.javaToJS(attributes.get(key), scope);
-			ScriptableObject.putProperty(scope, key, value);
-		}
 	}
 
 	// Support for loading from CommonJS modules
@@ -57,14 +40,10 @@ public class RhinoRunner {
 		cx.setOptimizationLevel(2);
 		try {
 			scope.set(cx.initStandardObjects());
-			addStandardObjectsToScope(scope.get());
-
-			scope.get().defineFunctionProperties(new String[] { "setTimeout" }, ConstantMethods.class,
-					ScriptableObject.DONTENUM);
 
 			Require require = installRequire(cx, scope.get());
-
 			Scriptable script = require.requireMain(cx, scriptName);
+
 		} finally {
 			Context.exit();
 		}
