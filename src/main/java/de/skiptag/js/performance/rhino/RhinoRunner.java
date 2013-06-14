@@ -1,21 +1,15 @@
 package de.skiptag.js.performance.rhino;
 
-import java.util.Map;
-
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.commonjs.module.Require;
 import org.mozilla.javascript.commonjs.module.RequireBuilder;
 
-import com.google.common.collect.Maps;
-
 public class RhinoRunner {
 	private ResourceLoader resourceLoader;
 
 	public static ThreadLocal<ScriptableObject> scope = new ThreadLocal<>();
-
-	private Map<String, Object> attributes = Maps.newHashMap();
 
 	private String scriptName;
 

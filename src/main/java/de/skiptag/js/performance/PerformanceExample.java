@@ -19,7 +19,7 @@ public class PerformanceExample {
 	public static void main(String[] args) throws Exception {
 		URL url = PerformanceExample.class.getClassLoader().getResource("dromaeo/tests");
 		File folder = new File(url.toURI());
-		System.out.println("File\tRhino\tDynJS");
+		System.out.println("File\tRhino\tDynJS\tEmbedded");
 
 		for (String file : folder.list(new FilenameFilter() {
 
@@ -31,6 +31,7 @@ public class PerformanceExample {
 			System.out.print(file);
 			runOnRhino("dromaeo/tests/" + file);
 			runOnDynJS("dromaeo/tests/" + file);
+			runOnEmbedded("dromaeo/tests/" + file);
 			System.out.println("");
 		}
 	}
@@ -39,6 +40,7 @@ public class PerformanceExample {
 		try {
 			Stopwatch stopwatch = new Stopwatch();
 			DynJsRunner runner = new DynJsRunner(scriptName);
+			runner.start();
 			stopwatch.start();
 			runner.start();
 			stopwatch.stop();
@@ -52,8 +54,23 @@ public class PerformanceExample {
 		try {
 			Stopwatch stopwatch = new Stopwatch();
 			RhinoRunner rhinoRunner = new RhinoRunner(scriptName);
+			rhinoRunner.start();
 			stopwatch.start();
 			rhinoRunner.start();
+			stopwatch.stop();
+			System.out.print("\t" + stopwatch.elapsed(TimeUnit.MILLISECONDS));
+		} catch (Exception e) {
+			System.out.println("\tError");
+		}
+	}
+
+	private static void runOnEmbedded(String scriptName) throws Exception {
+		try {
+			Stopwatch stopwatch = new Stopwatch();
+			EmbeddedJSRunner runner = new EmbeddedJSRunner(scriptName);
+			runner.start();
+			stopwatch.start();
+			runner.start();
 			stopwatch.stop();
 			System.out.print("\t" + stopwatch.elapsed(TimeUnit.MILLISECONDS));
 		} catch (Exception e) {
